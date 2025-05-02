@@ -1,10 +1,15 @@
-﻿namespace MediaCap.API.Models.Domain
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace MediaCap.API.Models.Domain
 {
     public class Book
     {
         public Guid Id { get; set; }
         public string Title { get; set; }
-        public string Author { get; set; }
+
+        [ForeignKey("Author")]
+        public Guid AuthorId { get; set; }
+        public Author Author { get; set; }
         public int Rating { get; set; }
         public int Year { get; set; }
         public int YearRead { get; set; }
