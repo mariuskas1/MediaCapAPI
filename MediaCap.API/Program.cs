@@ -15,6 +15,8 @@ builder.Services.AddDbContext<MediacapDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MediacapConnectionString")));
 
 builder.Services.AddScoped<IBookRepository, SQLBookRepository>();
+builder.Services.AddScoped<IFilmRepository, SQLFilmRepository>();
+
 
 
 var app = builder.Build();
