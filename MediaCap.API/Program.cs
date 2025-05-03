@@ -1,4 +1,5 @@
 using MediaCap.API.Data;
+using MediaCap.API.Mappings;
 using MediaCap.API.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,7 +18,7 @@ builder.Services.AddDbContext<MediacapDbContext>(options =>
 builder.Services.AddScoped<IBookRepository, SQLBookRepository>();
 builder.Services.AddScoped<IFilmRepository, SQLFilmRepository>();
 
-
+builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 
 var app = builder.Build();
 
