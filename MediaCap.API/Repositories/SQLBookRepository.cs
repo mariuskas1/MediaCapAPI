@@ -1,5 +1,6 @@
 ﻿using MediaCap.API.Data;
 using MediaCap.API.Models.Domain;
+using Microsoft.EntityFrameworkCore;
 
 namespace MediaCap.API.Repositories
 {
@@ -12,29 +13,49 @@ namespace MediaCap.API.Repositories
             this.dbContext = dbContext;
         }
 
-        public Task<Book> CreateAsync(Book book)
+        public async Task<Book> CreateAsync(Book book)
         {
-            throw new NotImplementedException();
+            await dbContext.Books.AddAsync(book);
+            await dbContext.SaveChangesAsync();
+            return book;
         }
 
-        public Task<Book?> DeleteAsync(Guid id)
+        public async Task<Book?> DeleteAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var existingBook = await dbContext.Books.FirstOrDefaultAsync(x => x.Id == id);
+            if (existingBook == null)
+            {
+                return null;
+            }
+            dbContext.Books.Remove(existingBook);
+            await dbContext.SaveChangesAsync();
+            return existingBook;
         }
 
         public async Task<List<Book>> GetAllAsync()
         {
-            throw new NotImplementedException();
+           return await dbContext.Books.ToListAsync();
         }
 
-        public Task<Book> GetByIdAsync(Guid id)
+        public async Task<Book?> GetByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            return await dbContext.Books.FirstOrDefaultAsync(x => x.Id == id);
+                 
         }
 
-        public Task<Book> UpdateAsync(Guid id, Book book)
+        public async Task<Book> UpdateAsync(Guid id, Book book)
         {
-            throw new NotImplementedException();
+            var existingBook = dbContext.Books.FirstOrDefault(x => x.Id == id);
+            if (existingBook == null)
+            {
+                return null;
+            }
+            existingBook.Title = book.Title;
+            existingBook.Author = book.Author;
+            existingBook.Rating = book.Rating;
+
+            await dbContext.SaveChangesAsync();
+            return existingBook;
         }
     }
 }
