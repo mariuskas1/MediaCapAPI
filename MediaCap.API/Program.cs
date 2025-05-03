@@ -1,4 +1,5 @@
 using MediaCap.API.Data;
+using MediaCap.API.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,9 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<MediacapDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MediacapConnectionString")));
+
+builder.Services.AddScoped<IBookRepository, SQLBookRepository>();
+
 
 var app = builder.Build();
 
