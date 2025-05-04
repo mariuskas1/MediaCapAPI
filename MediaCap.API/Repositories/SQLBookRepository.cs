@@ -43,7 +43,7 @@ namespace MediaCap.API.Repositories
                  
         }
 
-        public async Task<Book> UpdateAsync(Guid id, Book book)
+        public async Task<Book?> UpdateAsync(Guid id, Book book)
         {
             var existingBook = dbContext.Books.FirstOrDefault(x => x.Id == id);
             if (existingBook == null)
