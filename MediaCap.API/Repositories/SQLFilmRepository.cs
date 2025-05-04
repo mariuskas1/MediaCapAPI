@@ -1,32 +1,60 @@
-﻿using MediaCap.API.Models.Domain;
+﻿using MediaCap.API.Data;
+using MediaCap.API.Models.Domain;
+using Microsoft.EntityFrameworkCore;
 
 namespace MediaCap.API.Repositories
 {
     public class SQLFilmRepository : IFilmRepository
     {
-        public Task<Film> CreateAsync(Film film)
+        private readonly MediacapDbContext dbContext;
+
+        public SQLFilmRepository(MediacapDbContext dbContext)
         {
-            throw new NotImplementedException();
+            this.dbContext = dbContext;
         }
 
-        public Task<Film?> DeleteAsync(Guid id)
+        public async Task<Film> CreateAsync(Film film)
         {
-            throw new NotImplementedException();
+            await dbContext.Films.AddAsync(film);
+            await dbContext.SaveChangesAsync();
+            return film;
         }
 
-        public Task<List<Film>> GetAllAsync()
+        public async Task<Film?> DeleteAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var existingFilm = await dbContext.Films.FirstOrDefaultAsync(x => x.Id == id);
+            if(existingFilm == null)
+            {
+                return null;
+            }
+            dbContext.Films.Remove(existingFilm);
+            await dbContext.SaveChangesAsync();
+            return existingFilm;
         }
 
-        public Task<Film> GetByIdAsync(Guid id)
+        public async Task<List<Film>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await dbContext.Films.ToListAsync();
         }
 
-        public Task<Film> UpdateAsync(Guid id, Film film)
+        public async Task<Film?> GetByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            return await dbContext.Films.FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task<Film?> UpdateAsync(Guid id, Film film)
+        {
+            var existingFilm = dbContext.Films.FirstOrDefault(x => x.Id == id);
+            if (existingFilm == null)
+            {
+                return null;
+            }
+            existingFilm.Title = film.Title;
+            existingFilm.Director = film.Director;
+            existingFilm.Rating = film.Rating;
+
+            await dbContext.SaveChangesAsync();
+            return existingFilm;
         }
     }
 }
